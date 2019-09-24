@@ -1,0 +1,9 @@
+[
+  {
+    "name": "aircon",
+    "append": true,
+    "watch": false,
+    "script": "main.js",
+    "cwd": "/home/pi/node/aircon/"
+  }
+]

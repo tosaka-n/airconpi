@@ -1,0 +1,110 @@
+<html>
+
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/zepto/1.2.0/zepto.js"></script>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>MyRoom</title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+</head>
+<script>
+	$(document).ready(async () => {
+		$.ajax( { type: "GET", url: "./status", headers: { "device": "raspi" },
+		success: data => {
+			console.log(data.status);
+			const key = data.status;
+        	        let status = key.toUpperCase();
+                	switch (key) {
+                        	case "off":
+                                	 status += "-orange"
+                          	       break;
+                        	case "cool_27":
+				case "cool_26":
+                        	case "cool_28":
+                                	status += "-blue";
+                                	break;
+                         	case "heat":
+                                	status += "-red"
+                                        break;
+                         	default:
+                                        status += "-green"
+                                	break;
+                	}
+			$("#status")[0].src = `https://img.shields.io/badge/status-${status}.svg`;
+		}
+		});
+	});
+</script>
+<script>
+	function presskey(key) {
+		try {
+			$.ajax(	{ type: "POST", url: "./switch", headers: { device: "raspi"}, data: { key }}, response => console.log(response));
+			let status = key.toUpperCase();
+			switch (key) {
+			case "off":
+				status += "-orange"
+				break;
+			case "cool_27":
+			case "cool_26":
+			case "cool_28":
+				status += "-blue";
+				break;
+			case "heat":
+				status += "-red";
+                                break;
+			default:
+                                status += "-green";
+				break;
+			}
+			$("#status")[0].src = `https://img.shields.io/badge/status-${status}.svg`;
+		} catch (err) {
+			console.info(`Error: ${err}`);
+		}
+	}
+</script>
+<style>
+div.buttons {
+	margin: 12px 10px;
+}
+img {
+    vertical-align: middle;
+    height: 30px;
+}
+</style>
+
+<body>
+	<div class="jumbotron">
+		<div class="well">
+			<h2>Air Conditioner Controller</h2>
+			<img id="status" src="https://img.shields.io/badge/status-null-inactive.svg" />
+		</div>
+		<div class="toolbar">
+			<div class="buttons">
+				<div class="btn-group">
+					<a class="center btn btn-warning" onclick="presskey('off')">OFF</a>
+				</div>
+			</div>
+			<div class="buttons">
+				<div class="btn-group">
+					<a class="center btn btn-info" onclick="presskey('cool_26')">COOL 26℃</a>
+					<a class="center btn btn-primary" onclick="presskey('cool_27')">COOL 27℃</a>
+					<a class="center btn btn-info" onclick="presskey('cool_28')">COOL 28℃</a>
+				</div>
+			</div>
+			<div class="buttons">
+				<div class="btn-group">
+					<a class="center btn btn-danger" onclick="presskey('heat')">HEAT 23℃</a>
+				</div>
+			</div>
+                        <div class="buttons">
+                                <div class="btn-group">
+                                        <a class="center btn btn-success" onclick="presskey('blow')">BLOW</a>
+                                </div>
+                        </div>
+		</div>
+	</div>
+</body>
+
+</html>
