@@ -1,5 +1,5 @@
 require("dotenv").config();
-const irsend = require("./controll.js");
+const { irsend } = require("./controll.js");
 const fetch = require("node-fetch");
 const util = require("util");
 const fs = require("fs").promises;
