@@ -2,7 +2,9 @@ require("dotenv").config();
 const { irsend } = require("./controll.js");
 const fetch = require("node-fetch");
 const util = require("util");
-const fs = require("fs").promises;
+const fs = require("fs");
+const writeFile = util.promisify(fs.writeFile)
+const readFile = util.promisify(fs.readFile)
 const jsondir = "/home/pi/node/aircon/public/status.json";
 
 const router = require("express").Router();
@@ -18,14 +20,14 @@ router.post("/switch", async (req, res, next) => {
 					}
 				})
 			});
-		await fs.writeFile(jsondir, JSON.stringify({ status: req.body.key }));
+		await writeFile(jsondir, JSON.stringify({ status: req.body.key }));
 		res.json({ success: true });
 	} else {
 		res.status(400);
 	}
 });
 router.get("/status", async (req, res, next) => {
-	const json = await fs.readFile(jsondir, "utf8");
+	const json = await readFile(jsondir, "utf8");
 	res.json(JSON.parse(json));
 });
 module.exports = router;
